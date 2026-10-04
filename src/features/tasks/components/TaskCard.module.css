@@ -1,0 +1,87 @@
+.card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px;
+  position: relative;
+}
+.card h3 {
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  margin: 10px 0 6px;
+}
+.description {
+  color: #526077;
+  line-height: 1.5;
+  margin: 0 0 15px;
+}
+.status {
+  border-radius: 999px;
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 8px;
+}
+.Pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+.InProgress {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.Completed {
+  background: #dcfce7;
+  color: #166534;
+}
+.Cancelled {
+  background: #f1f5f9;
+  color: #475569;
+}
+.details {
+  color: #64748b;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  gap: 16px;
+  margin: 0;
+}
+.details div {
+  display: flex;
+  gap: 5px;
+}
+.details dt {
+  font-weight: 700;
+}
+.details dd {
+  margin: 0;
+}
+
+.deleteButton {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  font-size: 1.35rem;
+  height: 30px;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 30px;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.deleteButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}

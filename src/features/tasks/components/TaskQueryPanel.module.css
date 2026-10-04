@@ -1,0 +1,96 @@
+.panel {
+  background: #fff;
+  border: 1px solid #dbe2ee;
+  border-radius: 14px;
+  box-shadow: 0 14px 30px rgb(15 23 42 / 8%);
+  margin-top: 10px;
+  padding: 20px;
+}
+.heading,
+.footer,
+.pager {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+.heading h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+.closeButton,
+.resetButton,
+.pager button {
+  background: transparent;
+  border: 0;
+  color: #4f46e5;
+  cursor: pointer;
+  font-weight: 750;
+  padding: 6px;
+}
+.closeButton:hover,
+.resetButton:hover {
+  text-decoration: underline;
+}
+.controls {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 18px 0;
+}
+.controls label,
+.pager label {
+  color: #475569;
+  display: grid;
+  font-size: 0.8rem;
+  font-weight: 700;
+  gap: 5px;
+}
+.controls input,
+.controls select,
+.pager select {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  min-height: 38px;
+  padding: 7px 8px;
+}
+.footer {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 14px;
+}
+.pager {
+  gap: 8px;
+  justify-content: flex-end;
+}
+.pager button {
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  color: #334155;
+}
+.pager button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.pager span {
+  color: #64748b;
+  font-size: 0.82rem;
+}
+@media (max-width: 760px) {
+  .controls {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .pager {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+}
+@media (max-width: 440px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+}
