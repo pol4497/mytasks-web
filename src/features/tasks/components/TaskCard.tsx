@@ -16,7 +16,13 @@ interface TaskCardProps {
   onDelete: (id: number) => Promise<void>;
 }
 
-type EditingField = 'title' | 'category' | 'dueDate' | 'status' | null;
+type EditingField =
+  | 'title'
+  | 'description'
+  | 'category'
+  | 'dueDate'
+  | 'status'
+  | null;
 
 const statusLabels = {
   Pending: 'Pending',
@@ -74,7 +80,8 @@ export function TaskCard({
 
     const input: UpdateTaskInput = {
       title: editingField === 'title' ? value : task.title,
-      description: task.description,
+      description:
+        editingField === 'description' ? value : (task.description ?? ''),
       dueDate: editingField === 'dueDate' ? value || null : task.dueDate,
       category: editingField === 'category' ? value : task.category,
       status: editingField === 'status' ? (value as TaskStatus) : task.status,
@@ -106,7 +113,9 @@ export function TaskCard({
     }
   };
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (
+    event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       void saveField();
@@ -178,8 +187,27 @@ export function TaskCard({
         </h3>
       )}
 
-      {task.description && (
-        <p className={styles.description}>{task.description}</p>
+      {editingField === 'description' ? (
+        <textarea
+          autoFocus
+          disabled={isUpdating}
+          onBlur={() => void saveField()}
+          onChange={(event) => setDraftValue(event.target.value)}
+          onKeyDown={handleKeyDown}
+          rows={3}
+          value={draftValue}
+        />
+      ) : (
+        <p
+          className={styles.description}
+          onDoubleClick={() =>
+            startEditing('description', task.description ?? '')
+          }
+          title='Double-click to edit'
+        >
+          {' '}
+          {task.description || 'Add a description'}{' '}
+        </p>
       )}
 
       <dl className={styles.details}>
