@@ -1,8 +1,8 @@
-import { useGuestSession } from '../features/guest/hooks/useGuestSession';
+import { useSession } from '../features/auth/hooks/useSession';
 import { TaskBrowser } from '../features/tasks/components/TaskBrowser';
 
 export function TasksPage() {
-  const { isReady, isLoading, error, retry } = useGuestSession();
+  const { status, user, error, retry } = useSession();
 
   return (
     <main className='page-shell'>
@@ -11,22 +11,24 @@ export function TasksPage() {
         <p>Insert and inspect your daily tasks.</p>
       </header>
 
-      {isLoading && (
+      {status === 'loading' && (
         <p className='session-state' role='status'>
           Preparing your task space…
         </p>
       )}
 
-      {!isLoading && error && (
+      {status === 'error' && (
         <section className='session-error' role='alert'>
-          <p>Could not start your guest session: {error}</p>
+          <p>Could not prepare your task space: {error}</p>
           <button onClick={() => void retry()} type='button'>
             Try again
           </button>
         </section>
       )}
 
-      {isReady && <TaskBrowser />}
+      {(status === 'guest' || status === 'authenticated') && (
+        <TaskBrowser key={user?.id ?? 'guest'} />
+      )}
     </main>
   );
 }
