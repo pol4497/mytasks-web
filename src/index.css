@@ -47,6 +47,14 @@ textarea {
   font-size: 1.05rem;
   margin: 14px 0 0;
 }
+
+.page-header-row {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
 .eyebrow {
   color: #4f46e5;
   font-size: 1.5rem;
@@ -97,4 +105,38 @@ textarea {
   cursor: pointer;
   font-weight: 700;
   padding: 8px 12px;
+}
+
+.account-actions {
+  align-items: center;
+  color: #475569;
+  display: flex;
+  font-size: 0.9rem;
+  gap: 10px;
+}
+
+.account-button {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: #334155;
+  cursor: pointer;
+  font-weight: 750;
+  min-height: 38px;
+  padding: 7px 12px;
+}
+
+.account-button:hover {
+  background: #f8fafc;
+}
+
+@media (max-width: 480px) {
+  .page-header-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .account-actions {
+    justify-content: space-between;
+  }
 }
