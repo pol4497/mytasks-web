@@ -68,3 +68,33 @@ textarea {
   background: #fff1f2;
   color: #be123c;
 }
+
+.session-state,
+.session-error {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  color: #526077;
+  margin: 0;
+  padding: 24px;
+}
+
+.session-error {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #9f1239;
+}
+
+.session-error p {
+  margin: 0 0 12px;
+}
+
+.session-error button {
+  background: #9f1239;
+  border: 0;
+  border-radius: 7px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 8px 12px;
+}
