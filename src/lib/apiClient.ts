@@ -9,6 +9,24 @@ const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? '/api').replace(
 export interface ApiRequestOptions extends RequestInit {
   /** Set to false for endpoints that must never receive an owner header. */
   includeOwnerHeader?: boolean;
+
+  /** Set to false for endpoints such as token refresh, which must not retry on 401. */
+  retryOnUnauthorized?: boolean;
+}
+
+type UnauthorizedRetryHandler = () => Promise<boolean>;
+
+let unauthorizedRetryHandler: UnauthorizedRetryHandler | null = null;
+let tokenRefreshPromise: Promise<boolean> | null = null;
+
+export function setUnauthorizedRetryHandler(handler: UnauthorizedRetryHandler) {
+  unauthorizedRetryHandler = handler;
+
+  return () => {
+    if (unauthorizedRetryHandler === handler) {
+      unauthorizedRetryHandler = null;
+    }
+  };
 }
 
 export class ApiError extends Error {
@@ -71,15 +89,27 @@ async function getErrorMessage(response: Response): Promise<string> {
   return 'The request failed.';
 }
 
-export async function apiRequest<T>(
-  path: string,
-  options: ApiRequestOptions = {},
-): Promise<T> {
+async function refreshAccessToken() {
+  if (!unauthorizedRetryHandler) return false;
+
+  if (!tokenRefreshPromise) {
+    tokenRefreshPromise = unauthorizedRetryHandler().finally(() => {
+      tokenRefreshPromise = null;
+    });
+  }
+
+  return tokenRefreshPromise;
+}
+
+async function sendRequest(path: string, options: ApiRequestOptions) {
   const {
     includeOwnerHeader = true,
+    retryOnUnauthorized: ignoredRetryOnUnauthorized,
     headers: requestHeaders,
     ...fetchOptions
   } = options;
+
+  void ignoredRetryOnUnauthorized;
 
   const headers = new Headers(requestHeaders);
 
@@ -95,12 +125,31 @@ export async function apiRequest<T>(
     if (ownerHeader) headers.set(...ownerHeader);
   }
 
-  const response = await fetch(getApiUrl(path), { ...fetchOptions, headers });
+  return fetch(getApiUrl(path), {
+    ...fetchOptions,
+    headers,
+  });
+}
+
+export async function apiRequest<T>(
+  path: string,
+  options: ApiRequestOptions = {},
+): Promise<T> {
+  const response = await sendRequest(path, options);
+
+  if (
+    response.status === 401 &&
+    options.retryOnUnauthorized !== false &&
+    (await refreshAccessToken())
+  ) {
+    return apiRequest<T>(path, { ...options, retryOnUnauthorized: false });
+  }
 
   if (!response.ok) {
     throw new ApiError(await getErrorMessage(response), response.status);
   }
 
   if (response.status === 204) return undefined as T;
+
   return response.json() as Promise<T>;
 }

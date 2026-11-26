@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { setUnauthorizedRetryHandler } from '../../../lib/apiClient';
 import { authApi } from '../api/authApi';
 import {
   clearAuthSession,
@@ -111,6 +112,45 @@ export function SessionProvider({ children }: SessionProviderProps) {
   useEffect(() => {
     void initialise();
   }, [initialise]);
+
+  useEffect(() => {
+    return setUnauthorizedRetryHandler(async () => {
+      const savedAuthSession = getAuthSession();
+
+      if (!savedAuthSession) return false;
+
+      try {
+        const refreshedSession = await authApi.refresh({
+          refreshToken: savedAuthSession.refreshToken,
+        });
+
+        saveAuthSession(refreshedSession);
+        clearGuestSession();
+        setGuestSession(null);
+        setUser(refreshedSession.user);
+        setStatus('authenticated');
+
+        return true;
+      } catch {
+        clearAuthSession();
+        setUser(null);
+        setGuestSession(null);
+
+        try {
+          await startGuestSession();
+        } catch (caughtError) {
+          setError(
+            caughtError instanceof Error
+              ? caughtError.message
+              : 'Could not start a guest session.',
+          );
+          setStatus('error');
+        }
+
+        return false;
+      }
+    });
+  }, [startGuestSession]);
 
   const login = useCallback(async (input: LoginInput) => {
     setError('');

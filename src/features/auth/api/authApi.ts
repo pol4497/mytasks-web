@@ -28,6 +28,7 @@ export const authApi = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(input),
       includeOwnerHeader: false,
+      retryOnUnauthorized: false,
     }),
 
   logout: (input: RefreshTokenInput) =>
